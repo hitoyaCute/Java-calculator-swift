@@ -10,8 +10,11 @@ import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JFrame;
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import javax.swing.SwingConstants;
@@ -45,6 +48,42 @@ public class GUI extends JFrame {
         return Math.round(x * factor) / factor;
     }
 
+    // Wrapper of the Helper method to add buttons easily
+    private RoundedButton addButton(String label, ActionListener listener, int x, int y) {
+        return addButton(label, listener, x, y, 94, 60);
+    }
+
+    // Helper method to add buttons easily
+    private RoundedButton addButton(String label, ActionListener listener, int x, int y, int width, int height) {
+        RoundedButton button = new RoundedButton(label, 50);
+        button.setFont(Conf.button_font);
+        button.setBackground(Conf.button_bg); // gray for digits
+        button.setForeground(Conf.button_fg);
+        button.setBounds(x, y, width, height);
+        
+        button.addActionListener(listener);
+        add(button);
+        return button;
+    }
+        private class Conf {
+        public static Dimension    window_size   = new Dimension(491, 511);
+        // public static double[] window_size_f = Arrays.stream(window_size).asDoubleStream().toArray();
+        public static Color    button_bg     = new Color(146, 72, 122);
+        public static Color    button_fg     = new Color(255, 211, 213);
+        public static Font     button_font   = new Font("Tahoma", Font.BOLD, 20);
+    };
+    // Arithmetic logic
+    private double calculate(double op1, double op2, String op) {
+        switch (op) {
+            case "+": return round(op1 + op2, 6);
+            case "-": return round(op1 - op2, 6);
+            case "*": return round(op1 * op2, 6);
+            case "/": return op2 == 0 ? Double.NaN : round(op1 / op2, 6);
+            default: return 0;
+        }
+    }
+
+
     public GUI() {
         setTitle("Calculator");
         setSize(Conf.window_size);
@@ -54,6 +93,7 @@ public class GUI extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null); // allows full control of positioning
+        
 
         // Current number display
         displayField = new JTextField();
@@ -64,62 +104,46 @@ public class GUI extends JFrame {
         displayField.setText("0");
         displayField.setBackground(Conf.button_bg);
         displayField.setForeground(Conf.button_fg);
+        displayField.setCaretColor(displayField.getBackground());
+        displayField.setHighlighter(null);
         add(displayField);
-        
         
         ButtonClickHandler listener = new ButtonClickHandler();
 
-        // Buttons (you can reposition them freely)
         // array struct
         //     037 141 245 349
-        // 103 del  C   %   +
-        // 184  7   8   9   -
-        // 265  4   5   6   *
-        // 346  1   2   3   /
-        // 427  0   .   # = #
+        // 103 Del  C   %   +
+        // 174  7   8   9   -
+        // 245  4   5   6   *
+        // 316  1   2   3   /
+        // 387  0   .   [ = ]
 
         // row 103
-        addButton("Del", listener, 37,  103);
+        addButton("Del", listener, 37,  103).add_key("DELETE").add_key("BACK_SPACE");
         addButton("C",   listener, 141, 103);
-        addButton("%",   listener, 245, 103);
-        addButton("+",   listener, 349, 103);
-
-        addButton("7", listener, 37, 174);
-        addButton("8", listener, 141, 174);
-        addButton("9", listener, 245, 174);
-        addButton("-", listener, 349, 174);
-
-        addButton("4", listener, 37, 245);
-        addButton("5", listener, 141, 245);
-        addButton("6", listener, 245, 245);
-        addButton("*", listener, 349, 245);
-
-        addButton("1", listener, 37, 316);
-        addButton("2", listener, 141, 316);
-        addButton("3", listener, 245, 316);
-        addButton("/", listener, 349, 316);
-
-        addButton("0", listener, 37, 387);
-        addButton(".", listener, 141, 387);
-        addButton("=", listener, 245, 387, 198, 60);
+        addButton("%",   listener, 245, 103).add_key("%");
+        addButton("+",   listener, 349, 103).add_key("+");
+        // row 174
+        addButton("7",   listener, 37,  174).add_key("7");
+        addButton("8",   listener, 141, 174).add_key("8");
+        addButton("9",   listener, 245, 174).add_key("9");
+        addButton("-",   listener, 349, 174).add_key("-");
+        // row 245
+        addButton("4",   listener, 37,  245).add_key("4");
+        addButton("5",   listener, 141, 245).add_key("5");
+        addButton("6",   listener, 245, 245).add_key("6");
+        addButton("*",   listener, 349, 245).add_key("*");
+        // row 316
+        addButton("1",   listener, 37,  316).add_key("1");
+        addButton("2",   listener, 141, 316).add_key("2");
+        addButton("3",   listener, 245, 316).add_key("3");
+        addButton("/",   listener, 349, 316).add_key("/");
+        // row 387
+        addButton("0",   listener, 37,  387).add_key("0");
+        addButton(".",   listener, 141, 387).add_key(".");
+        addButton("=",   listener, 245, 387, 198, 60).add_key("=");
 
         setVisible(true);
-    }
-    // Wrapper of the Helper method to add buttons easily
-    private JButton addButton(String label, ActionListener listener, int x, int y) {
-        return addButton(label, listener, x, y, 94, 60);
-    }
-    // Helper method to add buttons easily
-    private JButton addButton(String label, ActionListener listener, int x, int y, int width, int height) {
-        JButton button = new RoundedButton(label, 50);
-        button.setFont(Conf.button_font);
-        button.setBackground(Conf.button_bg); // gray for digits
-        button.setForeground(Conf.button_fg);
-        button.setBounds(x, y, width, height);
-        
-        button.addActionListener(listener);
-        add(button);
-        return button;
     }
 
     // Centralized event handler for all buttons
@@ -213,29 +237,7 @@ public class GUI extends JFrame {
                 System.out.println("command: " + command + " values (A,B,O): (" + operand1 + ", " + operand2 + ", " + operator + ") collected: " + collected);
         }
     }
-    private class Conf {
-        public static Dimension    window_size   = new Dimension(491, 511);
-        // public static double[] window_size_f = Arrays.stream(window_size).asDoubleStream().toArray();
-        public static Color    button_bg     = new Color(146, 72, 122);
-        public static Color    button_fg     = new Color(255, 211, 213);
-        public static Font     button_font   = new Font("Tahoma", Font.BOLD, 20);
-    };
-    // Arithmetic logic
-    private double calculate(double op1, double op2, String op) {
-        switch (op) {
-            case "+": return round(op1 + op2, 6);
-            case "-": return round(op1 - op2, 6);
-            case "*": return round(op1 * op2, 6);
-            case "/": return op2 == 0 ? Double.NaN : round(op1 / op2, 6);
-            default: return 0;
-        }
-    }
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(GUI::new);
-        if (args.length >= 1) {
-            debugg = true;
-        }
-    }
+
     public class RoundedButton extends JButton {
         private int arcRadius;
         private Shape shape;
@@ -289,6 +291,42 @@ public class GUI extends JFrame {
             }
             return shape.contains(x, y);
         }
-    } 
-}
 
+        public RoundedButton add_key(String key) {
+            String hold = "key_(" + key + ")_hold";
+            String release = "key_(" + key + ")_release";
+            //when the key is pressed, perform "pressButton"
+            getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(key), hold);
+            getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke("released " + key), release);
+            //when "pressButton" is performed, click the button
+            getActionMap()
+                .put(hold, new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        doClick(); // simulate button press
+                        this.setEnabled(true);
+                    }
+            });
+            getActionMap()
+                .put(release, new AbstractAction(){
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        this.setEnabled(false);
+                    }
+                });
+
+            return this;
+        }
+
+    } 
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(GUI::new);
+        if (args.length >= 1) {
+            debugg = true;
+        }
+    }
+
+}
