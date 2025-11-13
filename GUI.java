@@ -18,9 +18,7 @@ import javax.swing.SwingConstants;
 
 import java.util.Arrays;
 
-//import sun.jvm.hotspot.utilities.Unsigned5.SetPosition;
-
-
+// repo https://github.com/hitoyaCute/Java-calculator-swift.git
 
 // inherit the JFrame (Frame processor ig)
 public class GUI extends JFrame {
@@ -103,7 +101,7 @@ public class GUI extends JFrame {
 
         addButton("0", listener, 37, 387);
         addButton(".", listener, 141, 387);
-        addButton("=", listener, 245, 387, 199, 60);
+        addButton("=", listener, 245, 387, 198, 60);
 
         setVisible(true);
     }
@@ -245,9 +243,9 @@ public class GUI extends JFrame {
         public RoundedButton(String label, int radius) {
             super(label);
             this.arcRadius = radius;
-            setOpaque(false); // Make the button non-opaque so the rounded shape is visible
+            setOpaque(false);
             setFocusPainted(false); // Remove the focus border
-            setBorderPainted(false); // Remove the default border
+            setBorderPainted(false);
             setContentAreaFilled(false); // Do not fill the content area with the default square background
         }
 
@@ -268,27 +266,18 @@ public class GUI extends JFrame {
 
             // Determine the color based on the button's state (pressed, rollover, or normal)
             if (getModel().isArmed()) {
-                g2.setColor(getBackground().darker()); // Darker color when pressed
+                g2.setColor(getBackground().darker());
             } else if (getModel().isRollover()) {
-                g2.setColor(getBackground().brighter()); // Brighter color on hover
+                g2.setColor(getBackground().brighter());
             } else {
-                g2.setColor(getBackground()); // Normal background color
+                g2.setColor(getBackground());
             }
 
             // Fill the rounded rectangle
-            g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arcRadius, arcRadius);
+            g2.fillRoundRect(0, 0, getWidth() , getHeight() , arcRadius, arcRadius);
             
             // Call the superclass method to paint the text and icons
             super.paintComponent(g2);
-            g2.dispose();
-        }
-
-        @Override
-        protected void paintBorder(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setColor(getForeground()); // Use foreground color for the border
-            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arcRadius, arcRadius); // Draw the border
             g2.dispose();
         }
 
