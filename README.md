@@ -33,7 +33,10 @@ The calculator is implemented in Java using Java Swing for the graphical user in
 ## Output
 
 ![Calculator Output](img/preview_00.png)
-![Calculator Output](Img/preview_01.png)
+![Calculator Output](img/preview_01.png)
+<div>
+  <img src="img/preview_02.png" style="width: 300px;height: auto;">
+</div>
 
 ## How to Run
 
