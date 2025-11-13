@@ -51,4 +51,4 @@ java GUI
 Feel free to contribute, report issues, or suggest improvements!
 
 Happy Coding! 👨🏻‍💻✨
-also thanks to [AHBRIJESH](https://github.com/AHBRIJESH/Calculator-Using-java/blob/main/README.md) for ~~stealing~~ copying your README
+also thanks to [AHBRIJESH](https://github.com/AHBRIJESH/Calculator-Using-java/blob/main/README.md) for ~~stealing~~ your README
