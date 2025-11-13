@@ -198,6 +198,10 @@ public class GUI extends JFrame {
                 }
             } else if ("+-*/%".contains(command)) { // operator
                 if (command.equals("%") && collected >= 1) { // atleast A is provided
+                    if (collected == 1) {
+                        operand1 = Double.parseDouble(displayField.getText());
+                        collected = 2;
+                    }
                     operand1 = operand1 / 100;
                     displayField.setText(Double.toString(round(operand1, 6)));
                     operator = "";
@@ -295,25 +299,41 @@ public class GUI extends JFrame {
         public RoundedButton add_key(String key) {
             String hold = "key_(" + key + ")_hold";
             String release = "key_(" + key + ")_release";
+            
+            KeyStroke pressStroke;
+            KeyStroke releaseStroke;
+
+            if (key.length() == 1) {
+                char ch = key.charAt(0);
+                pressStroke = KeyStroke.getKeyStroke(ch);
+                releaseStroke = KeyStroke.getKeyStroke(ch, 0, true);
+            } else {
+                pressStroke = KeyStroke.getKeyStroke("pressed " + key);
+                releaseStroke = KeyStroke.getKeyStroke("released " + key);
+            }
+
+
             //when the key is pressed, perform "pressButton"
             getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(key), hold);
+                .put(pressStroke, hold);
             getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke("released " + key), release);
+                    .put(releaseStroke, release);
             //when "pressButton" is performed, click the button
             getActionMap()
                 .put(hold, new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        getModel().setArmed(true);
+                        getModel().setPressed(true);
                         doClick(); // simulate button press
-                        this.setEnabled(true);
                     }
-            });
+               });
             getActionMap()
                 .put(release, new AbstractAction(){
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        this.setEnabled(false);
+                        getModel().setArmed(false);
+                        getModel().setPressed(false);
                     }
                 });
 
