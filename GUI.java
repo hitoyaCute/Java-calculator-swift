@@ -1,23 +1,24 @@
 import java.awt.Font;
+import java.awt.Shape;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Shape;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JFrame;
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.KeyStroke;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-
 import javax.swing.SwingConstants;
+import javax.swing.AbstractAction;
+import javax.swing.SwingUtilities;
 
 import java.util.Arrays;
 
@@ -25,7 +26,6 @@ import java.util.Arrays;
 
 // inherit the JFrame (Frame processor ig)
 public class GUI extends JFrame {
-
     private JTextField displayField;
 
     private double operand1 = 0;
@@ -83,7 +83,6 @@ public class GUI extends JFrame {
         }
     }
 
-
     public GUI() {
         setTitle("Calculator");
         setSize(Conf.window_size);
@@ -93,7 +92,6 @@ public class GUI extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null); // allows full control of positioning
-        
 
         // Current number display
         displayField = new JTextField();
@@ -120,7 +118,7 @@ public class GUI extends JFrame {
 
         // row 103
         addButton("Del", listener, 37,  103).add_key("DELETE").add_key("BACK_SPACE");
-        addButton("C",   listener, 141, 103);
+        addButton("C",   listener, 141, 103).add_key("ESCAPE");
         addButton("%",   listener, 245, 103).add_key("%");
         addButton("+",   listener, 349, 103).add_key("+");
         // row 174
@@ -141,7 +139,7 @@ public class GUI extends JFrame {
         // row 387
         addButton("0",   listener, 37,  387).add_key("0");
         addButton(".",   listener, 141, 387).add_key(".");
-        addButton("=",   listener, 245, 387, 198, 60).add_key("=");
+        addButton("=",   listener, 245, 387, 198, 60).add_key("=").add_key("ENTER");
 
         setVisible(true);
     }
@@ -153,8 +151,6 @@ public class GUI extends JFrame {
             String command = e.getActionCommand();
             String display_text = displayField.getText();
 
-            
-
             if (command.equals(".") && collected != 4  && !is_dot_pressed) {
                 displayField.setText(display_text + ".");
                 is_dot_pressed = true;
@@ -164,19 +160,34 @@ public class GUI extends JFrame {
                 }
                 if (collected == 0)
                     collected = 1;
-            } else if (command.equals("Del") && !display_text.isEmpty() && collected != 4 ) {
+            } else if (command.equals("Del") && !display_text.isEmpty()) {
                 String temp = display_text;
+
+                if (collected == 4 ) {
+                    operator = "";
+                    collected = 1;
+                }
+                
                 if (temp.length() >= 2) {
                     displayField.setText(temp.substring(0, temp.length()-1));
 
                     if (temp.charAt(temp.length()-1) == '.') {
                         is_dot_pressed = false;
                     }
+                    if (collected == 1) {
+                        collected = 0;
+                    } else if (collected == 3) {
+                        collected = 2;
+                    }
                 } else {
                     displayField.setText("0");
                     is_dot_pressed = false;
+                    if (collected == 1) {
+                        collected = 0;
+                    } else if (collected == 3) {
+                        collected = 2;
+                    }
                 }
-
 
             } else if (command.matches("\\d")) { // if digit
                 if (collected == 0) {
@@ -233,7 +244,6 @@ public class GUI extends JFrame {
                 operand1 = operand2 = collected = 0;
                 operator = "";
                 displayField.setText("0");
-
                 is_dot_pressed = false;
             }
 
@@ -312,12 +322,11 @@ public class GUI extends JFrame {
                 releaseStroke = KeyStroke.getKeyStroke("released " + key);
             }
 
-
             //when the key is pressed, perform "pressButton"
             getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(pressStroke, hold);
             getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                    .put(releaseStroke, release);
+                .put(releaseStroke, release);
             //when "pressButton" is performed, click the button
             getActionMap()
                 .put(hold, new AbstractAction() {
@@ -336,7 +345,6 @@ public class GUI extends JFrame {
                         getModel().setPressed(false);
                     }
                 });
-
             return this;
         }
 
@@ -348,5 +356,4 @@ public class GUI extends JFrame {
             debugg = true;
         }
     }
-
 }
