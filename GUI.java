@@ -1,15 +1,11 @@
 import java.awt.Font;
 import java.awt.Shape;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -19,6 +15,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.awt.geom.RoundRectangle2D;
 
 import java.util.Arrays;
 
@@ -92,6 +93,12 @@ public class GUI extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(null); // allows full control of positioning
+        
+        SwingUtilities.invokeLater( new Runnable() { 
+            public void run() { 
+                requestFocusInWindow();
+            } 
+        });       
 
         // Current number display
         displayField = new JTextField();
@@ -188,7 +195,6 @@ public class GUI extends JFrame {
                         collected = 2;
                     }
                 }
-
             } else if (command.matches("\\d")) { // if digit
                 if (collected == 0) {
                     displayField.setText(command);
@@ -244,11 +250,12 @@ public class GUI extends JFrame {
                 operand1 = operand2 = collected = 0;
                 operator = "";
                 displayField.setText("0");
+
                 is_dot_pressed = false;
             }
 
             if (debugg)
-                System.out.println("command: " + command + " values (A,B,O): (" + operand1 + ", " + operand2 + ", " + operator + ") collected: " + collected);
+                System.out.println("command: '" + command + "' values (A,B,O): (" + operand1 + ", " + operand2 + ", " + operator + ") collected: " + collected);
         }
     }
 
@@ -347,7 +354,6 @@ public class GUI extends JFrame {
                 });
             return this;
         }
-
     } 
     
     public static void main(String[] args) {
